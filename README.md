@@ -11,13 +11,13 @@ Ask Claude for a "launch video", "promo", "hype / showcase video", or run `/brag
 **Option 1 — skills CLI**
 
 ```bash
-npx skills add <your-github-username>/brag-everything
+npx skills add dhayford92/brag-everything
 ```
 
 **Option 2 — manual**
 
 ```bash
-git clone https://github.com/<your-github-username>/brag-everything.git
+git clone https://github.com/dhayford92/brag-everything.git
 cp -r brag-everything/skills/brag-motion ~/.claude/skills/brag-motion      # macOS / Linux
 # Windows (PowerShell):
 # Copy-Item -Recurse brag-everything\skills\brag-motion $env:USERPROFILE\.claude\skills\brag-motion
