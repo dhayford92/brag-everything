@@ -1,0 +1,104 @@
+<!doctype html>
+<!--
+  brag-motion · reference composition (rendered + verified end-to-end on a demo app "Shipnote").
+  REWRITE IT for the project you're in — keep the arc, replace every asset, word and colour with the real ones.
+
+  Arc (60 beats @ 112.5 BPM = 32.00 s, frame-locked 16 frames/beat @ 30 fps):
+    hook 8 (energy 0)  → the project's own absurdity, typed       [Brag.type]
+    problem 4 (1)      → real empty UI tilted + 2-line headline     [Brag.window + Brag.words]
+    turn 4 (2, slam)   → full-bleed accent beat-drop               [Brag.slam]
+    demo-type 12 (2)   → the working app: real typing flipbook, cursor clicks the real button   [Brag.flip + Brag.cursor + Brag.on]
+    result 8 (3)       → real output panel, before → after         [Brag.card + Brag.words + Brag.focus]
+    export 8 (3)       → click, the app's own toast, push-in, confetti
+    features 8 (2)     → README bullets as a stacked deck          [Brag.deck]
+    outro 8 (1)        → logo lock-up, tagline swap                [Brag.lockup]
+  Assets: ../assets/capture/** from `brag.mjs capture`, ../assets/logo.svg copied from the repo.
+-->
+<html><head><meta charset="utf-8"><title>Shipnote — brag</title>
+<link rel="stylesheet" href="runtime/brag.css">
+<script src="runtime/brag.js"></script>
+</head><body><div id="brag-root"></div>
+<script>
+// brag-plan.md: 112.5 BPM (16 frames/beat @30fps), F major, bright-pop. 60 beats = 32.00s.
+const A = '../assets/capture/';
+const F = A + 'flow-generate/';
+const CAP = { w: 1440, h: 900 };                          // capture viewport (manifest.viewport)
+Brag.setup({ bpm: 112.5, fps: 30, accent: '#4B3BF5', accent2: '#8E80FF', ink: '#17172B', paper: '#F4F4FA', paper2: '#E6E6F2',
+  key: 'F', mode: 'major', music: 'bright-pop', title: 'shipnote', seed: 11 });
+const W = 1920, H = 1080;
+
+// 1 · HOOK (8) — the project's own absurdity: a real commit message nobody can read
+Brag.scene('hook', 8, (s) => {
+  const line = Brag.h('div', { class: 't', style: { font: '600 92px var(--mono)', letterSpacing: '-0.02em', color: 'var(--ink)' } });
+  Brag.place(s, line, { x: W / 2, y: H / 2 - 40, float: 0.2 });
+  Brag.type(s, line, 'fix: nullref in auth mw', { at: 0.5, rate: 0.25 });
+  Brag.words(s, 'Your users read *this.*', { at: 5.5, stagger: 0.25, cls: 't t-m', y: H / 2 + 110, sound: null });
+}, { energy: 0, camera: { from: { s: 1.0 }, to: { s: 1.06 } } });
+
+// 2 · PROBLEM (4) — real empty app, tilted, with the line
+Brag.scene('problem', 4, (s) => {
+  Brag.window(s, A + 'page-home.png', { x: 1400, y: 560, w: 1000, ry: -16, rx: 6, url: 'localhost · shipnote', at: 0, enter: 'right' });
+  Brag.words(s, 'Changelogs\nnobody *reads.*', { at: 0.25, cls: 't t-xl', x: 130, y: 520, align: 'left' });
+}, { in: 'blur', energy: 1, camera: { from: { s: 1.0, ry: 2 }, to: { s: 1.05, ry: -2 } } });
+
+// 3 · SLAM (4) — the turn
+Brag.scene('turn', 4, (s) => {
+  Brag.slam(s, 'Until now.', { size: 170 });
+}, { in: 'slam', energy: 2 });
+
+// 4 · DEMO: TYPE + CLICK (12) — the working app doing its job (real typing frames)
+Brag.scene('demo-type', 12, (s) => {
+  // full app window, typing frames are full-page shots of the real UI
+  const pages = [{ src: F + '000-empty.png', at: 0 }, { src: F + '026-typed.png', at: 6 }, { src: F + '027-generated.png', at: 9.5, fade: 0.25 }];
+  const fb = Brag.flip(s, pages);
+  const win = Brag.window(s, fb, { x: W / 2, y: H / 2 + 20, w: 1560, url: 'localhost · shipnote', at: 0, enter: 'rise', float: 0.3 });
+  // panel close-up of the real typing (clip frames) floats over the left side while typing
+  const clips = [...Array(25).keys()].map((i) => ({ src: F + String(i + 1).padStart(3, '0') + '-type-' + Math.min(146, (i + 1) * 6) + '.png', at: 0.75 + i * 0.2 }));
+  const pc = Brag.flip(s, clips);
+  const panel = Brag.card(s, pc, { x: 600, y: 600, w: 760, rx: 4, ry: 10, z: 120, at: 0.5, enter: 'pop', radius: 22 });
+  Brag.out(s, panel.card, 'shrink', { at: 6.25, dur: 0.75 });
+  Brag.keys(s, { at: 0.75, until: 5.75, rate: 0.25 });   // typing ticks on the 16th grid under the flipbook
+  const img = fb.firstChild;
+  Brag.cursor(s, [
+    { x: 1500, y: 900, at: 6.5 },
+    { ...Brag.on(img, 552, 517, CAP.w, CAP.h), at: 8.5 },
+  ], { clicks: [9], kind: 'arrow' });
+  Brag.words(s, 'Paste commits. *Click once.*', { at: 0.5, cls: 't t-s', y: 70, sound: null });
+  Brag.camera(s, { from: { s: 0.98 }, to: { s: 1.06, y: 10 } });
+}, { in: 'zoom', energy: 2 });
+
+// 5 · RESULT (8) — the real output panel; humour is the project's own: "nullref in auth mw" → plain English
+Brag.scene('result', 8, (s) => {
+  Brag.card(s, F + '028-notes-panel.png', { x: 1240, y: 560, w: 940, ry: -14, rx: 5, at: 0, enter: 'right' });
+  Brag.words(s, '"nullref in auth mw"', { at: 0.5, cls: 't t-s', x: 150, y: 420, align: 'left', sound: null }).style.cssText += ';font-family:var(--mono);color:var(--muted)';
+  Brag.words(s, 'becomes\n*A crash in auth\nmiddleware.*', { at: 2, stagger: 0.25, cls: 't t-l', x: 150, y: 600, align: 'left' });
+  Brag.focus(s, { x: 1240, y: 560, at: 5, dur: 3, scale: 1.06, center: 0 }); // center:0 — text sits beside the card, don't slide it off-frame
+}, { in: 'blur', energy: 3, camera: { from: { s: 1.0, ry: 3 }, to: { s: 1.04, ry: -3 } } });
+
+// 6 · EXPORT (8) — click Export, real toast, celebration
+Brag.scene('export', 8, (s) => {
+  const fb = Brag.flip(s, [{ src: F + '027-generated.png', at: 0 }, { src: F + '029-exported.png', at: 3.25, fade: 0.2 }]);
+  Brag.window(s, fb, { x: W / 2, y: H / 2 + 30, w: 1500, rx: 8, at: 0, enter: 'rise', url: 'localhost · shipnote' });
+  Brag.cursor(s, [{ x: 700, y: 820, at: 0.5 }, { ...Brag.on(fb.firstChild, 1339, 119, CAP.w, CAP.h), at: 2.5 }], { clicks: [3], kind: 'arrow' });
+  // the app's OWN toast appears in the captured frame (bottom-right) — push in on it instead of faking one
+  Brag.focus(s, { x: 1690, y: 1010, at: 4, dur: 3.5, scale: 1.9, center: 0.85 });
+  Brag.confetti(s, { x: 1500, y: 880, at: 3.5, count: 170 });
+}, { in: 'rise', energy: 3, camera: { from: { s: 1.0, rx: 4 }, to: { s: 1.05, rx: 0 } } });
+
+// 7 · FEATURES (8) — README bullets, one per beat pair
+Brag.scene('features', 8, (s) => {
+  Brag.deck(s, [
+    { icon: 'layers', label: 'Features · Fixes · Chores' },
+    { icon: 'pen', label: 'Plain-English rewrites' },
+    { icon: 'download', label: 'One-click Markdown' },
+    { icon: 'clock', label: 'Every release, kept' },
+  ], { at: 0.25, every: 1.75 });
+}, { in: 'whip', energy: 2 });
+
+// 8 · OUTRO (8)
+Brag.scene('outro', 8, (s) => {
+  Brag.lockup(s, { mark: '../assets/logo.svg', name: 'Shipnote', taglines: ['Paste commits.', 'Release notes humans *actually read.*'], every: 2, at: 0.25 });
+}, { in: 'blur', energy: 1, camera: { from: { s: 1.02 }, to: { s: 1.0 } } });
+
+Brag.done();
+</script></body></html>
