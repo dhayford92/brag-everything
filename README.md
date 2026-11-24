@@ -20,7 +20,7 @@ npx skills add <your-github-username>/brag-everything
 git clone https://github.com/<your-github-username>/brag-everything.git
 cp -r brag-everything/skills/brag-motion ~/.claude/skills/brag-motion      # macOS / Linux
 # Windows (PowerShell):
-# Copy-Item -Recurse brag-motion\skills\brag-motion $env:USERPROFILE\.claude\skills\brag-motion
+# Copy-Item -Recurse brag-everything\skills\brag-motion $env:USERPROFILE\.claude\skills\brag-motion
 ```
 
 Then install the render engine's dependencies once (Playwright, ffmpeg, fonts):
